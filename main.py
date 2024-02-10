@@ -2,6 +2,7 @@ import numpy as np
 import random
 from matplotlib import pyplot as plt
 import time
+from prettytable import PrettyTable
 
 class Environment():
     def __init__(self, width, height):
@@ -36,17 +37,14 @@ class Environment():
         return np.count_nonzero(self.grid)
     
     def visualize(self, prefix, final=False):
-        if(self.step % 100 == 0 or self.step == 0 or final):
-            if(final):
-                print(self.grid)
-                print(self.visited)
+        if(self.step % 500 == 0 or self.step == 0 or final):
             
-            plt.imshow(self.grid,cmap='Blues' ,interpolation="nearest")
+            plt.imshow(self.grid,cmap='Blues' ,interpolation="nearest", vmin=0, vmax=1)
             filepath = prefix + "grid" + str(self.step)
             plt.savefig(filepath, dpi=300)
             plt.clf()
             
-            plt.imshow(self.visited, cmap="Reds", interpolation="nearest")
+            plt.imshow(self.visited, cmap="Reds", interpolation="nearest", vmin=0, vmax=1)
             filepath = prefix + "path" + str(self.step)
             plt.savefig(filepath,dpi=300)
             plt.clf()
@@ -319,22 +317,25 @@ def main():
     model_reflex_agent_dirty_left_10_10 = []
     model_reflex_agent_dirty_left_100_100 = []
     
-    
-    # ra = ModelBasedReflex(0, 0)
-    # env = Environment(100, 100)
-    # env.make_dirty(0.1)
-    # ra.visualize_agent_movement(env)
-    # for i in range(0, 10000):
-    #     ra.action(env)
-    #     ra.visualize_agent_movement(env)
-    #random_agent_simulation(random_agent_dirty_left_5_5, random_agent_dirty_left_10_10, random_agent_dirty_left_100_100)
-    #reflex_agent_simulation(reflex_agent_dirty_left_5_5, reflex_agent_dirty_left_10_10, reflex_agent_dirty_left_100_100)
+    random_agent_simulation(random_agent_dirty_left_5_5, random_agent_dirty_left_10_10, random_agent_dirty_left_100_100)
+    reflex_agent_simulation(reflex_agent_dirty_left_5_5, reflex_agent_dirty_left_10_10, reflex_agent_dirty_left_100_100)
     model_reflex_agent_simulation(model_reflex_agent_dirty_left_5_5, model_reflex_agent_dirty_left_10_10, model_reflex_agent_dirty_left_100_100)
-    print(random_agent_dirty_left_5_5)
-    print(reflex_agent_dirty_left_5_5)
-    print(model_reflex_agent_dirty_left_5_5)
+    
+    pt = PrettyTable()
+    pt.field_names = ["Agent","Grid Size", "Operations Limit #", "# Dirty Remaining"]
+    pt.add_row(["Random Agent", "5X5", "20000", np.average(random_agent_dirty_left_5_5)])
+    pt.add_row(["Reflex Agent", "5X5", "20000", np.average(reflex_agent_dirty_left_5_5)])
+    pt.add_row(["Model Reflex Agent", "5X5", "20000", np.average(model_reflex_agent_dirty_left_5_5)])
+    
+    pt.add_row(["Random Agent", "10X10", "20000", np.average(random_agent_dirty_left_10_10)])
+    pt.add_row(["Reflex Agent", "10X10", "20000", np.average(reflex_agent_dirty_left_10_10)])
+    pt.add_row(["Model Reflex Agent", "10X10", "20000", np.average(model_reflex_agent_dirty_left_10_10)])
+    
+    pt.add_row(["Random Agent", "100X100", "20000", np.average(random_agent_dirty_left_100_100)])
+    pt.add_row(["Reflex Agent", "100X100", "20000", np.average(reflex_agent_dirty_left_100_100)])
+    pt.add_row(["Model Reflex Agent", "100X100", "20000", np.average(model_reflex_agent_dirty_left_100_100)])
+    
+    print(pt)
+
     
 main()
-
-# row column
-# y x
